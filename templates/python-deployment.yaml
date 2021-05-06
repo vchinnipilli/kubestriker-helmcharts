@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.python.server.name }}
+  labels:
+    release: {{ .Values.global.appname }}
+    app: {{ .Values.global.appname }}
+    component: {{ .Values.python.component.name }}
+spec:
+  replicas: {{ .Values.python.server.replicas }}
+  selector:
+    matchLabels:
+      release: {{ .Values.global.appname }}
+      app: {{ .Values.global.appname }}
+      component: {{ .Values.python.component.name }}
+  template:
+    metadata:
+      labels:
+        release: {{ .Values.global.appname }}
+        app: {{ .Values.global.appname }}
+        component: {{ .Values.python.component.name }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ .Values.global.appname }}
+                  release: {{ .Values.global.appname }}
+                  component: {{ .Values.python.component.name }}
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: kubestriker-python-storage
+          emptyDir: {}
+      containers:
+        - name: {{ .Values.python.server.image.name }}
+          image: "{{ .Values.python.server.image.repository }}"
+          imagePullPolicy: {{ .Values.python.server.image.pullPolicy }}
+          env:
+            - name: ADVERTISE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NAMSESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DYNAMODB_URL
+              value: {{ .Values.python.server.env.db.url}}
+            - name: DYNAMODB_ACCESS_KEY_ID
+              value: {{ .Values.db.server.env.dynamodb.access_key_id }}
+            - name: DYNAMODB_ACCESS_KEY
+              value: {{ .Values.db.server.env.dynamodb.secret_access_key }}
+            - name: DYNAMODB_REGION
+              value: {{ .Values.db.server.env.dynamodb.region }}
+          ports:
+            - name: {{ .Values.python.service.name }}
+              containerPort: 8888
+              protocol: TCP
+            - name: db-expose
+              containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - name: kubestriker-python-storage
+              mountPath: /data
+              subPath: data

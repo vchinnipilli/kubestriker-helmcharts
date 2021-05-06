@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.fe.service.name }}
+  labels:
+    name: {{ .Values.global.appname }}
+    app: {{ .Values.fe.component.appname }}
+    component: {{ .Values.fe.component.name }}
+spec:
+  type: {{ .Values.fe.service.type }}
+  ports:
+    - port: {{ .Values.fe.service.port }}
+      targetPort: {{ .Values.fe.service.targetport }}
+      protocol: TCP
+      name: {{ .Values.fe.service.portname }}
+  selector:
+    app: {{ .Values.fe.component.appname }}}
+    component: {{ .Values.fe.component.name }}

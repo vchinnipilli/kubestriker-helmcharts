@@ -1,0 +1,97 @@
+# Default values for kubestriker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  appname: kubestriker
+  selector:
+    name: kubestriker
+
+db:
+  componentname: database
+  service:
+    type: ClusterIP
+    port: 8000
+    targetport: 8000 
+    name: db-service
+  
+  server:
+    name: kubestriker-db
+    replicas: 1
+    
+    env:
+      dynamodb:
+        access_key_id: "anything"
+        secret_access_key: "anything"
+        region: "ap-southeast-2"
+
+    image:
+      repository: "amazon/dynamodb-local:latest"
+      name: kubestriker-db
+      pullPolicy: IfNotPresent
+
+    # extraVolumes:
+    #   - emptyDir: {}
+    #     name: kubestriker-db-storage
+
+python:
+  component:
+    name: server
+  service:
+    name: python-svc
+    type: ClusterIP
+    port: 8888
+    targetport: 8888
+    portname: python-svc
+
+  server:
+    name: kubestriker-python
+    replicas: 1
+    image:
+      name: kubestriker-python
+      image: cloudsecguy/python:chai
+      pullPolicy: IfNotPresent
+    env:
+      db:
+        url: http://$(DB_SERVICE_NEW_SERVICE_HOST):$(DB_SERVICE_NEW_SERVICE_PORT)
+
+ingress:
+  enabled: true
+  name: backend-ingress
+  annotations:
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+      #nginx.ingress.kubernetes.io/cors-allow-origin: "http://a58035bae9f734bda98554bffcbb9e7c-1259345141.ap-southeast-2.elb.amazonaws.com:8080/"
+      nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+      nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+  service:
+    name: python-svc
+    port: 8888
+  hosts:
+    - host: chart-example.local
+      paths: [/]
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+fe:
+  component:
+    name: frontend-server
+    appname: kubestriker-fe
+  service:
+    name: fe-svc
+    type: LoadBalancer
+    port: 8080
+    targetport: 80
+    portname: ks-fe-svc
+
+  server:
+    name: fe-svc
+    image:
+      name: kubestriker-fe
+      repository: cloudsecguy/kubestrikerfe:env3
+      pullPolicy: IfNotPresent
+    replicas: 1
+    apiaddress: http://a805ccee0d51e407883d704b6e684dd2-1053467523.ap-southeast-2.elb.amazonaws.com/ 
+
