@@ -38,18 +38,6 @@ spec:
           image: "{{ .Values.fe.server.image.repository }}"
           imagePullPolicy: {{ .Values.fe.server.image.pullPolicy }}
           env:
-            - name: ADVERTISE_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: NAMSESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
             - name: API_URL
               value: {{ .Values.fe.server.apiaddress }}
           ports:
@@ -57,7 +45,7 @@ spec:
               containerPort: 80
               protocol: TCP
             - name: python-server
-              containerPort: 8888
+              containerPort: 8080
               protocol: TCP
           volumeMounts:
             - name: kubestriker-python-storage

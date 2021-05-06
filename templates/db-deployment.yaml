@@ -40,18 +40,6 @@ spec:
           image: "{{ .Values.db.server.image.repository }}"
           imagePullPolicy: {{ .Values.db.server.image.pullPolicy }}
           env:
-            - name: ADVERTISE_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: NAMSESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
             - name: DYNAMODB_ACCESS_KEY_ID
               value: {{ .Values.db.server.env.dynamodb.access_key_id }}
             - name: DYNAMODB_ACCESS_KEY

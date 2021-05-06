@@ -14,8 +14,8 @@ and configuring Kubestriker on Kubernetes.
 1. Clone this repository and navigate to kubestriker-helm folder.
 
 2. Now you're ready to install Kubestriker! To install using Helm 3 run:
-        $ helm install kubestiker ./kubestriker
+        $ helm install kubestiker-helm ./kubestriker-helm
 
 3. For testing the output of the files. run:
-        $ helm install --dry-run kubestiker ./kubestriker > ./kubestriker/test.txt
+        $ helm install --dry-run kubestiker-helm ./kubestriker-helml > ./kubestriker-helm/test.txt
 

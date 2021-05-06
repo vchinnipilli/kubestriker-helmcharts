@@ -26,7 +26,7 @@ db:
         region: "ap-southeast-2"
 
     image:
-      repository: "amazon/dynamodb-local:latest"
+      repository: "cloudsecguy/kubestrikerdb:v1.0.0"
       name: kubestriker-db
       pullPolicy: IfNotPresent
 
@@ -40,8 +40,8 @@ python:
   service:
     name: python-svc
     type: ClusterIP
-    port: 8888
-    targetport: 8888
+    port: 8080
+    targetport: 8080
     portname: python-svc
 
   server:
@@ -49,7 +49,7 @@ python:
     replicas: 1
     image:
       name: kubestriker-python
-      image: cloudsecguy/python:chai
+      image: cloudsecguy/kubestrikerbe:v1.0.0
       pullPolicy: IfNotPresent
     env:
       db:
@@ -61,12 +61,11 @@ ingress:
   annotations:
       nginx.ingress.kubernetes.io/enable-cors: "true"
       nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
-      #nginx.ingress.kubernetes.io/cors-allow-origin: "http://a58035bae9f734bda98554bffcbb9e7c-1259345141.ap-southeast-2.elb.amazonaws.com:8080/"
       nginx.ingress.kubernetes.io/cors-allow-origin: "*"
       nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
   service:
     name: python-svc
-    port: 8888
+    port: 8080
   hosts:
     - host: chart-example.local
       paths: [/]
@@ -90,8 +89,8 @@ fe:
     name: fe-svc
     image:
       name: kubestriker-fe
-      repository: cloudsecguy/kubestrikerfe:env3
+      repository: cloudsecguy/kubestrikerfe:v1.0.0
       pullPolicy: IfNotPresent
     replicas: 1
-    apiaddress: http://a805ccee0d51e407883d704b6e684dd2-1053467523.ap-southeast-2.elb.amazonaws.com/ 
+    apiaddress: http://url.com/
 

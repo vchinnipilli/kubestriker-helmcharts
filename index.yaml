@@ -2,13 +2,13 @@ apiVersion: v1
 entries:
   kubestriker-helm:
   - apiVersion: v2
-    appVersion: 1.8.2
-    created: "2021-05-06T13:12:48.202286+10:00"
+    appVersion: 1.2.0
+    created: "2021-05-06T20:42:18.575189+10:00"
     description: A Helm chart for Kubernetes
-    digest: 34b12737dab6a3f95784977337f748dbb9ecab032213d294f4194c8f249aed58
+    digest: b5ea98d193c883f2901d7c2065f93c4c14cf40c7a73868ebb5e59943df51b2a8
     name: kubestriker-helm
     type: application
     urls:
-    - https://vchinnipilli.github.io/kubestriker-helmcharts/kubestriker-helm-0.1.0.tgz
-    version: 0.1.0
-generated: "2021-05-06T13:12:48.196796+10:00"
+    - https://vchinnipilli.github.io/kubestriker-helmcharts/kubestriker-helm-1.0.0.tgz
+    version: 1.0.0
+generated: "2021-05-06T20:42:18.573416+10:00"
